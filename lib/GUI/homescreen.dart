@@ -10,15 +10,23 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.amber,
-        title: Text('Homescreen'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text(
+          'Homescreen',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.secondary,
+          ),
+        ),
         actions: [
           IconButton(
             tooltip: 'Press here to manage your user',
             onPressed: () {
               Navigator.pushNamed(context, '/User');
             },
-            icon: Icon(Icons.person),
+            icon: Icon(
+              Icons.person,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
           ),
         ],
       ),

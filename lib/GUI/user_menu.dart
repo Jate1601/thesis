@@ -14,7 +14,13 @@ class _UserMenuState extends State<UserMenu> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Auth menu'),
+          iconTheme:
+              IconThemeData(color: Theme.of(context).colorScheme.secondary),
+          backgroundColor: Theme.of(context).colorScheme.primary,
+          title: Text(
+            'Auth menu',
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
         ),
         body: Column(
           children: [

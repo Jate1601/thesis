@@ -1,14 +1,18 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:thesis/GUI/user_signup.dart';
+import 'package:thesis/Firebase/firebase_handlers.dart';
+import 'package:thesis/GUI/User/signup.dart';
 
-class UserMenu extends StatefulWidget {
+import '../../support/supporting_functions.dart';
+
+class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
-  _UserMenuState createState() => _UserMenuState();
+  _LoginState createState() => _LoginState();
 }
 
-class _UserMenuState extends State<UserMenu> {
-  final _userNameController = TextEditingController();
+class _LoginState extends State<Login> {
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
@@ -19,7 +23,7 @@ class _UserMenuState extends State<UserMenu> {
               IconThemeData(color: Theme.of(context).colorScheme.secondary),
           backgroundColor: Theme.of(context).colorScheme.primary,
           title: Text(
-            'Auth menu',
+            'Login menu',
             style: TextStyle(color: Theme.of(context).colorScheme.secondary),
           ),
         ),
@@ -27,11 +31,12 @@ class _UserMenuState extends State<UserMenu> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _userNameController,
+              controller: _emailController,
               decoration: const InputDecoration(
-                labelText: 'Username',
+                labelText: 'Email',
               ),
               textAlign: TextAlign.center,
+              keyboardType: TextInputType.emailAddress,
             ),
             TextField(
               controller: _passwordController,
@@ -39,6 +44,7 @@ class _UserMenuState extends State<UserMenu> {
                 labelText: 'Password',
               ),
               textAlign: TextAlign.center,
+              obscureText: true,
             ),
             Row(
               children: [
@@ -49,7 +55,7 @@ class _UserMenuState extends State<UserMenu> {
                   onPressed: () {
                     showDialog(
                       context: context,
-                      builder: (context) => UserSignup(),
+                      builder: (context) => const Signup(),
                     );
                   },
                 ),
@@ -58,16 +64,20 @@ class _UserMenuState extends State<UserMenu> {
                   child: const Text(
                     'Login',
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    final String email = _emailController.text.trim();
+                    final String pass = _passwordController.text.trim();
+                    try {
+                      await signIn(email, pass);
+                      Navigator.pop(context);
+                      showSnackBar('User successfully logged in', context);
+                    } catch (e) {
+                      showSnackBar(e.toString(), context);
+                    }
+                  },
                 ),
               ],
             ),
-            /*
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('Logout'),
-            ),
-             */
           ],
         ));
   }

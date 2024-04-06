@@ -1,26 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Firebase/firebase_handlers.dart';
-import '../support/supporting_functions.dart';
+import '../../Firebase/firebase_handlers.dart';
+import '../../support/supporting_functions.dart';
 
 //TODO once sign in is set up, fix encryption on Password and email
 
-class UserSignup extends StatefulWidget {
+class Signup extends StatefulWidget {
+  const Signup({super.key});
+
   @override
-  _UserSignupState createState() => _UserSignupState();
+  _SignupState createState() => _SignupState();
 }
 
-class _UserSignupState extends State<UserSignup> {
+class _SignupState extends State<Signup> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-
-  void showSnackBar(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,19 +61,23 @@ class _UserSignupState extends State<UserSignup> {
                     final String email = _emailController.text.trim();
                     final String password = _passwordController.text.trim();
                     if (!isValidEmail(email)) {
-                      showSnackBar("Please enter a valid email address.");
+                      showSnackBar(
+                          "Please enter a valid email address.", context);
                       return;
                     }
                     if (!isValidPasswordLength(password)) {
-                      showSnackBar("Password must be at least 9 characters.");
+                      showSnackBar(
+                          "Password must be at least 9 characters.", context);
                       return;
                     }
                     if (!isValidPasswordFormat(password)) {
                       showSnackBar(
-                          "Password must contain a capital letter, a number and a symbol.");
+                          "Password must contain a capital letter, a number and a symbol.",
+                          context);
                       return;
                     }
-                    showSnackBar("Account created. Window now closing.");
+                    showSnackBar(
+                        "Account created. Window now closing.", context);
                     await signUp(email, password).then(
                       (_) {
                         Navigator.pop(context);

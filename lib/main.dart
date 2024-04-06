@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:thesis/GUI/User/logout.dart';
 import 'package:thesis/GUI/homescreen.dart';
-import 'GUI/user_menu.dart';
+import 'GUI/User/login.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -20,8 +21,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/',
       routes: {
-        '/': (context) => HomeScreen(),
-        '/User': (context) => UserMenu(),
+        '/': (context) => const HomeScreen(),
+        '/Login': (context) => const Login(),
+        '/Logout': (context) => const Logout(),
       },
       title: 'Thesis Project',
       theme: ThemeData(

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "885992568398",
+    "project_id": "thesis-jate1601",
+    "storage_bucket": "thesis-jate1601.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885992568398:android:0a4e5ff9e19373b5f2751f",
+        "android_client_info": {
+          "package_name": "se.jate.thesis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8Pdl1EdxDFPLHvmfKENpx2MMf7IyxXr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:885992568398:android:037d218c802b33c0f2751f",
+        "android_client_info": {
+          "package_name": "se.jate1601.thesis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8Pdl1EdxDFPLHvmfKENpx2MMf7IyxXr4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

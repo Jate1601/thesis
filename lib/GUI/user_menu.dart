@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thesis/GUI/user_signup.dart';
 
 class UserMenu extends StatefulWidget {
   @override
@@ -23,27 +24,50 @@ class _UserMenuState extends State<UserMenu> {
           ),
         ),
         body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
               controller: _userNameController,
-              decoration: InputDecoration(labelText: 'Username'),
+              decoration: const InputDecoration(
+                labelText: 'Username',
+              ),
+              textAlign: TextAlign.center,
             ),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(
+                labelText: 'Password',
+              ),
+              textAlign: TextAlign.center,
             ),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('Create account'),
+            Row(
+              children: [
+                ElevatedButton(
+                  child: const Text(
+                    'Create account',
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => UserSignup(),
+                    );
+                  },
+                ),
+                const Spacer(),
+                ElevatedButton(
+                  child: const Text(
+                    'Login',
+                  ),
+                  onPressed: () {},
+                ),
+              ],
             ),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text('Login'),
-            ),
+            /*
             ElevatedButton(
               onPressed: () {},
               child: Text('Logout'),
             ),
+             */
           ],
         ));
   }

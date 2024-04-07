@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thesis/Firebase/retrieve_chats.dart';
 import 'package:thesis/Firebase/send_message.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -10,6 +12,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  final RetrieveChats _retrieveChats =
+      RetrieveChats(); // Create an instance of RetrieveChats
+
   @override
   void initState() {
     super.initState();
@@ -42,27 +47,38 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      ///////////////////
-      body: ListView(
-        children: [
-          ListTile(
-            title: Text('Chat #1'),
-            tileColor: Theme.of(context).colorScheme.primaryContainer,
-            onTap: () {
-              // TODO Navigate to the selected chat screen
-            },
-          ),
-          ListTile(
-            title: Text('Chat #2'),
-            tileColor: Theme.of(context).colorScheme.primaryContainer,
-            onTap: () {
-              // TODO Navigate to the selected chat screen
-            },
-          ),
-          Text('Initiating connection with firebase....'),
-        ],
+      body: StreamBuilder<List<QueryDocumentSnapshot>>(
+        stream: _retrieveChats.getUserChats(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if (snapshot.data == null) {
+            return const Center(
+              child: Text('No chats yet'),
+            );
+          } else {
+            final chatDocs = snapshot.data;
+            return ListView.builder(
+              itemCount: chatDocs?.length,
+              itemBuilder: (ctx, index) {
+                final chatId = chatDocs?[index].id;
+                final participants = chatDocs?[index]['participants'];
+
+                return ListTile(
+                  title: Text('Chat $chatId'),
+                  subtitle: Text('Participants: ${participants.join(", ")}'),
+                  onTap: () {
+                    print('pressed');
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
-      ////////////////////
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await sendMessage('Hello there', 'RaXMardrsWXvX3wRxHuK');

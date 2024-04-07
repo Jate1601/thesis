@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:thesis/Firebase/firebase_handlers.dart';
 import 'package:thesis/GUI/User/signup.dart';
 
+import '../../Firestore/firebase_handlers.dart';
 import '../../support/supporting_functions.dart';
 
 class Login extends StatefulWidget {

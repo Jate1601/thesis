@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../Firebase/firebase_handlers.dart';
+import '../../Firestore/firebase_handlers.dart';
 import '../../support/supporting_functions.dart';
 
 //TODO once sign in is set up, fix encryption on Password and email

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:thesis/Firebase/auth_wrapper.dart';
 import 'package:thesis/GUI/User/logout.dart';
-import 'package:thesis/GUI/homescreen.dart';
+import 'Firestore/auth_wrapper.dart';
 import 'GUI/User/login.dart';
 import 'firebase_options.dart';
 
@@ -31,6 +30,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch().copyWith(
           primary: Colors.deepPurpleAccent,
           secondary: Colors.black,
+          primaryContainer: Colors.teal,
           brightness: Brightness.dark,
           background: Colors.grey,
         ),

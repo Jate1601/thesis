@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thesis/Firebase/send_message.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -41,11 +42,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: const Center(
-        child: Text('Initiating connection with firebase....'),
+      ///////////////////
+      body: ListView(
+        children: [
+          ListTile(
+            title: Text('Chat #1'),
+            tileColor: Theme.of(context).colorScheme.primaryContainer,
+            onTap: () {
+              // TODO Navigate to the selected chat screen
+            },
+          ),
+          ListTile(
+            title: Text('Chat #2'),
+            tileColor: Theme.of(context).colorScheme.primaryContainer,
+            onTap: () {
+              // TODO Navigate to the selected chat screen
+            },
+          ),
+          Text('Initiating connection with firebase....'),
+        ],
       ),
+      ////////////////////
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () async {
+          await sendMessage('Hello there', 'RaXMardrsWXvX3wRxHuK');
+        },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(
           Icons.send,

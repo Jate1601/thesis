@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thesis/Firebase/firebase_handlers.dart';
+
+import '../../Firestore/firebase_handlers.dart';
 
 class Logout extends StatefulWidget {
   const Logout({super.key});

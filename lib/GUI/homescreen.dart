@@ -10,6 +10,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -38,6 +43,14 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: const Center(
         child: Text('Initiating connection with firebase....'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: Icon(
+          Icons.send,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       ),
     );
   }

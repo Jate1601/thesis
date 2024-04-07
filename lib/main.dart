@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:thesis/Firebase/auth_wrapper.dart';
 import 'package:thesis/GUI/User/logout.dart';
 import 'package:thesis/GUI/homescreen.dart';
 import 'GUI/User/login.dart';
@@ -10,6 +11,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(const MyApp());
 }
 
@@ -19,9 +21,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: '/',
+      home: const AuthWrapper(),
       routes: {
-        '/': (context) => const HomeScreen(),
         '/Login': (context) => const Login(),
         '/Logout': (context) => const Logout(),
       },

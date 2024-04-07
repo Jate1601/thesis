@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
-import 'package:thesis/Firebase/send_message.dart';
+import 'package:thesis/support/app_config.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
@@ -68,11 +69,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 final participants = chatDocs?[index]['participants'];
                 // TODO make this look better
                 return ListTile(
+                  tileColor: Theme.of(context).colorScheme.primaryContainer,
                   title: Text('Chat $chatId'),
                   subtitle: Text('Participants: ${participants.join(", ")}'),
                   onTap: () {
-                    Navigator.pushNamed(context, '/Chatscreen');
+                    Navigator.pushNamed(context, '/Chatscreen',
+                        arguments: <String, String>{
+                          'chatId': orgChatId,
+                        });
                   },
+                  shape: RoundedRectangleBorder(
+                      side: const BorderSide(
+                        color: Colors.black,
+                        width: 1,
+                      ),
+                      borderRadius: BorderRadius.circular(5)),
+                  textColor: Theme.of(context).colorScheme.secondary,
                 );
               },
             );
@@ -81,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await sendMessage('Hello there', 'RaXMardrsWXvX3wRxHuK');
+          //TODO //await sendMessage('Hello there', 'RaXMardrsWXvX3wRxHuK');
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(

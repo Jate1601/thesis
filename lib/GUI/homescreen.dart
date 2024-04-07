@@ -66,12 +66,12 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (ctx, index) {
                 final chatId = chatDocs?[index].id;
                 final participants = chatDocs?[index]['participants'];
-
+                // TODO make this look better
                 return ListTile(
                   title: Text('Chat $chatId'),
                   subtitle: Text('Participants: ${participants.join(", ")}'),
                   onTap: () {
-                    print('pressed');
+                    Navigator.pushNamed(context, '/Chatscreen');
                   },
                 );
               },

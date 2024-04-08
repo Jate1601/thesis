@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/send_message.dart';
+import 'package:thesis/GUI/Chat/speech_bubble_painter.dart';
 
 import '../../Firebase/retrieve_messages.dart';
 
@@ -47,7 +49,36 @@ class _ChatScreenState extends State<ChatScreen> {
                   reverse: true,
                   itemCount: chatDocs.length,
                   itemBuilder: (context, index) => ListTile(
-                    title: Text(chatDocs[index]['text']),
+                    title: Row(
+                      mainAxisAlignment: chatDocs[index]['senderId'] ==
+                              FirebaseAuth.instance.currentUser?.uid
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
+                      children: [
+                        CustomPaint(
+                          painter: SpeechBubblePainter(
+                            color: chatDocs[index]['senderId'] ==
+                                    FirebaseAuth.instance.currentUser?.uid
+                                ? Colors
+                                    .blue[200]! // Color for sender's message
+                                : Colors
+                                    .grey[300]!, // Color for receiver's message
+                            isSender: chatDocs[index]['senderId'] ==
+                                FirebaseAuth.instance.currentUser?.uid,
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 14.0, vertical: 10.0),
+                            child: Text(
+                              chatDocs[index]['text'],
+                              style: TextStyle(
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },

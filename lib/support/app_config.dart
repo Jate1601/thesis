@@ -11,7 +11,7 @@ Map<String, dynamic> createMessageBlock({
   return {
     'text': text,
     'senderId': FirebaseAuth.instance.currentUser?.uid,
-    'receiverId': receiverId, // TODO receiverId can already be set here?
+    'receiverId': receiverId,
     'timestamp': FieldValue.serverTimestamp(),
   };
 }

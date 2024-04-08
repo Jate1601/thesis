@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
+import 'package:thesis/GUI/Chat/chatscreen.dart';
 import 'package:thesis/support/app_config.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -70,10 +71,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   title: Text('Chat $chatId'),
                   subtitle: Text('Participants: ${participants.join(", ")}'),
                   onTap: () {
-                    Navigator.pushNamed(context, '/Chatscreen',
-                        arguments: <String, String>{
-                          'chatId': orgChatId,
-                        });
+                    final String receiverId;
+                    if (chatDocs?[index]['participants'][0] ==
+                        FirebaseAuth.instance.currentUser?.uid) {
+                      receiverId = chatDocs?[index]['participants'][1];
+                    } else {
+                      receiverId = chatDocs?[index]['participants'][0];
+                    }
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ChatScreen(
+                            chatId: orgChatId, receiverId: receiverId),
+                      ),
+                    );
                   },
                   shape: RoundedRectangleBorder(
                       side: const BorderSide(
@@ -90,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //TODO //await sendMessage('Hello there', 'RaXMardrsWXvX3wRxHuK');
+          //TODO send a new message to new user
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(

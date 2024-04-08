@@ -8,8 +8,9 @@ import '../../Firebase/retrieve_messages.dart';
 
 class ChatScreen extends StatefulWidget {
   final String chatId;
+  final String receiverId;
 
-  const ChatScreen({super.key, required this.chatId});
+  const ChatScreen({super.key, required this.chatId, required this.receiverId});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -17,13 +18,13 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
-  late MessageService _messageService;
+  late RetrieveMessages _retrievedMessages;
 
   @override
   void initState() {
     super.initState();
-    _messageService =
-        MessageService(chatId: widget.chatId); // Initialize the message service
+    _retrievedMessages = RetrieveMessages(
+        chatId: widget.chatId); // Initialize the message service
   }
 
   @override
@@ -37,7 +38,7 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           Expanded(
             child: StreamBuilder(
-              stream: _messageService.getMessages(),
+              stream: _retrievedMessages.getMessages(),
               builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(
@@ -96,14 +97,16 @@ class _ChatScreenState extends State<ChatScreen> {
                     Icons.send,
                     color: Theme.of(context).colorScheme.secondary,
                   ),
-                  onPressed: () {
-                    sendMessage(_messageController.text, widget.chatId);
+                  onPressed: () async {
+                    sendMessage(_messageController.text, widget.chatId,
+                        widget.receiverId);
                     _messageController.clear();
                   },
                 ),
               ),
               onSubmitted: (_) => {
-                sendMessage(_messageController.text, widget.chatId),
+                sendMessage(
+                    _messageController.text, widget.chatId, widget.receiverId),
                 _messageController.clear(),
               },
             ),

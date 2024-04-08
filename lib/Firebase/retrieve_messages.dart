@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class MessageService {
+class RetrieveMessages {
   final String chatId;
 
-  MessageService({required this.chatId});
+  RetrieveMessages({required this.chatId});
 
   Stream<QuerySnapshot> getMessages() {
     return FirebaseFirestore.instance

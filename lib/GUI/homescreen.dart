@@ -28,9 +28,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           'Homescreen',
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
         ),
         actions: [
           IconButton(

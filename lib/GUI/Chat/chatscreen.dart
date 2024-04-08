@@ -59,8 +59,9 @@ class _ChatScreenState extends State<ChatScreen> {
                           painter: SpeechBubblePainter(
                             color: chatDocs[index]['senderId'] ==
                                     FirebaseAuth.instance.currentUser?.uid
-                                ? Colors
-                                    .blue[200]! // Color for sender's message
+                                ? Theme.of(context)
+                                    .colorScheme
+                                    .primaryContainer // Color for sender's message
                                 : Colors
                                     .grey[300]!, // Color for receiver's message
                             isSender: chatDocs[index]['senderId'] ==

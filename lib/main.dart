@@ -31,10 +31,9 @@ class MyApp extends StatelessWidget {
       title: 'Thesis Project',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSwatch().copyWith(
-          primary: Colors.deepPurpleAccent,
+          primary: Colors.indigo,
           secondary: Colors.black,
-          primaryContainer: Colors.teal,
-          brightness: Brightness.dark,
+          primaryContainer: Colors.blueAccent,
           background: Colors.blueGrey,
         ),
         useMaterial3: true,

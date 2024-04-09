@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:thesis/Firebase/find_chat_id.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
 import 'package:thesis/GUI/Chat/chatscreen.dart';
 import 'package:thesis/support/app_config.dart';
@@ -71,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
             return ListView.builder(
               itemCount: chatDocs?.length,
               itemBuilder: (ctx, index) {
-                final chatId = chatDocs?[index].id;
+                final chatId = chatDocs![index].id;
                 final participants = chatDocs?[index]['participants'];
                 // TODO make this look better
                 return ListTile(
@@ -89,7 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ChatScreen(
-                            chatId: orgChatId, receiverId: receiverId),
+                          chatId: chatId,
+                          receiverId: receiverId,
+                        ),
                       ),
                     );
                   },

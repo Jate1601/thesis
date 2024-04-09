@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:thesis/Firebase/create_chat.dart';
 
-class CreateChat extends StatefulWidget {
-  const CreateChat({super.key});
+class CreateChatScreen extends StatefulWidget {
+  const CreateChatScreen({super.key});
 
   @override
-  _CreateChatState createState() => _CreateChatState();
+  _CreateChatScreenState createState() => _CreateChatScreenState();
 }
 
-class _CreateChatState extends State<CreateChat> {
+class _CreateChatScreenState extends State<CreateChatScreen> {
   final _receiverIdController = TextEditingController();
 
   @override
@@ -32,7 +33,10 @@ class _CreateChatState extends State<CreateChat> {
               obscureText: false,
             ),
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                createChat(_receiverIdController.text.trim(), context);
+                _receiverIdController.clear();
+              },
               child: Text('Submit'),
             ),
           ],

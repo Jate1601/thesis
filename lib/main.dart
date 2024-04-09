@@ -3,6 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:thesis/GUI/User/logout.dart';
 import 'Firestore/auth_wrapper.dart';
 import 'GUI/User/login.dart';
+import 'GUI/create_chat.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -24,6 +25,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/Login': (context) => const Login(),
         '/Logout': (context) => const Logout(),
+        '/CreateChat': (context) => const CreateChat(),
       },
       title: 'Thesis Project',
       theme: ThemeData(

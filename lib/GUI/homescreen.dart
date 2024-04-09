@@ -27,8 +27,16 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(
-          'Homescreen',
+        title: Column(
+          children: [
+            Text(
+              'Homescreen ',
+            ),
+            Text(
+              FirebaseAuth.instance.currentUser!.uid, // TODO Remove this line
+              overflow: TextOverflow.fade,
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -100,11 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //TODO send a new message to new user
+          Navigator.pushNamed(context, '/CreateChat');
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(
-          Icons.send,
+          Icons.add_box_outlined,
           color: Theme.of(context).colorScheme.secondary,
         ),
       ),

@@ -1,10 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:thesis/Firebase/find_chat_id.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
 import 'package:thesis/GUI/Chat/chatscreen.dart';
-import 'package:thesis/support/app_config.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -30,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Column(
           children: [
-            Text(
+            const Text(
               'Homescreen ',
             ),
             Text(
@@ -73,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemCount: chatDocs?.length,
               itemBuilder: (ctx, index) {
                 final chatId = chatDocs![index].id;
-                final participants = chatDocs?[index]['participants'];
+                final participants = chatDocs[index]['participants'];
                 // TODO make this look better
                 return ListTile(
                   tileColor: Theme.of(context).colorScheme.primaryContainer,
@@ -81,11 +79,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   subtitle: Text('Participants: ${participants.join(", ")}'),
                   onTap: () {
                     final String receiverId;
-                    if (chatDocs?[index]['participants'][0] ==
+                    if (chatDocs[index]['participants'][0] ==
                         FirebaseAuth.instance.currentUser?.uid) {
-                      receiverId = chatDocs?[index]['participants'][1];
+                      receiverId = chatDocs[index]['participants'][1];
                     } else {
-                      receiverId = chatDocs?[index]['participants'][0];
+                      receiverId = chatDocs[index]['participants'][0];
                     }
                     Navigator.of(context).push(
                       MaterialPageRoute(

@@ -37,7 +37,7 @@ class _CreateChatScreenState extends State<CreateChatScreen> {
                 createChat(_receiverIdController.text.trim(), context);
                 _receiverIdController.clear();
               },
-              child: Text('Submit'),
+              child: const Text('Submit'),
             ),
           ],
         ),

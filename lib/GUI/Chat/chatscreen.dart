@@ -31,7 +31,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chatting...'),
+        title: const Text('Chatting...'),
         backgroundColor: Theme.of(context).colorScheme.primary,
       ),
       body: Column(
@@ -69,11 +69,11 @@ class _ChatScreenState extends State<ChatScreen> {
                                 FirebaseAuth.instance.currentUser?.uid,
                           ),
                           child: Container(
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 14.0, vertical: 10.0),
                             child: Text(
                               chatDocs[index]['text'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.black,
                               ),
                             ),

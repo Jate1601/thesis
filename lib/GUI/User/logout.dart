@@ -21,7 +21,15 @@ class _LogoutState extends State<Logout> {
           data: FirebaseAuth.instance.currentUser!.uid,
           version: QrVersions.auto,
           size: 200.0,
-          eyeStyle: QrEyeStyle(
+          eyeStyle: const QrEyeStyle(
+            color: Colors.black,
+            eyeShape: QrEyeShape.square,
+          ),
+          dataModuleStyle: const QrDataModuleStyle(
+            color: Colors.black,
+            dataModuleShape: QrDataModuleShape.square,
+          ),
+          /*eyeStyle: QrEyeStyle(
             color: Theme.of(context).colorScheme.primary,
             eyeShape: QrEyeShape.circle,
           ),
@@ -29,6 +37,7 @@ class _LogoutState extends State<Logout> {
             color: Theme.of(context).colorScheme.primary,
             dataModuleShape: QrDataModuleShape.circle,
           ),
+          */
         ),
       );
     } else {

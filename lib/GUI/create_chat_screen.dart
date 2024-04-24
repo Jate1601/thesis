@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/create_chat.dart';
+import 'package:thesis/GUI/QR/QRView.dart';
 
 class CreateChatScreen extends StatefulWidget {
   const CreateChatScreen({Key? key}) : super(key: key);
@@ -44,14 +45,10 @@ class _CreateChatScreenState extends State<CreateChatScreen> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                content:
-                    SizedBox(height: 200.0, width: 200.0, child: Text('temp')),
-              );
-            },
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => BarcodeScannerWithController(),
+            ),
           );
         },
         backgroundColor: Colors.white,

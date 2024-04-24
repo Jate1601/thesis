@@ -42,5 +42,5 @@ Future<void> signOut() async {
 
 Future<String> getKey() {
   KeyStorage keyStorage = KeyStorage();
-  return keyStorage.ensureKeyExists(FirebaseAuth.instance.currentUser!.uid);
+  return keyStorage.ensureKeyExists();
 }

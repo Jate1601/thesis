@@ -68,7 +68,7 @@ class _LoginState extends State<Login> {
                   final String email = _emailController.text.trim();
                   final String pass = _passwordController.text.trim();
                   try {
-                    await signIn(email, pass);
+                    signIn(email, pass);
                     showSnackBar('User successfully logged in', context);
                   } catch (e) {
                     showSnackBar(e.toString(), context);

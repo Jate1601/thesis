@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:thesis/Firebase/create_chat.dart';
 
 class BarcodeScannerWithController extends StatefulWidget {
   final Function(String) onBarcodeScanned;

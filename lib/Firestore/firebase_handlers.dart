@@ -7,6 +7,7 @@ Future<void> signUp(String email, String pass) async {
       email: email,
       password: pass,
     );
+    await KeyStorage().generateAndStoreKeyPair();
     // Handle success //TODO
   } catch (e) {
     // handle error //TODO
@@ -18,6 +19,7 @@ Future<void> signIn(String email, String pass) async {
   try {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: pass);
+    await KeyStorage().ensureKeyExists();
   } on FirebaseAuthException catch (e) {
     if (e.code == 'user-not-found' || e.code == 'wrong-password') {
       throw Exception(
@@ -34,9 +36,4 @@ Future<void> signOut() async {
   } catch (e) {
     throw Exception('Signing out failed: $e');
   }
-}
-
-Future<String> getKey() {
-  KeyStorage keyStorage = KeyStorage();
-  return keyStorage.ensureKeyExists();
 }

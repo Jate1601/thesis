@@ -1,31 +1,102 @@
+import 'dart:typed_data';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:pointycastle/export.dart' as pc;
+
 class KeyStorage {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  // Save key using the Firebase UID as alias
-  Future<void> saveKey(String key) async {
-    await _storage.write(
-        key: FirebaseAuth.instance.currentUser!.uid, value: key);
-  }
-
   // Retrieve key using the Firebase UID as alias
-  Future<String?> getKey() async {
+  Future<String?> _retrieveKey() async {
     return await _storage.read(key: FirebaseAuth.instance.currentUser!.uid);
   }
 
-  // Generate and save a new key if one does not already exist
-  Future<String> ensureKeyExists() async {
-    String? key = await getKey();
-    if (key == null) {
-      var random = Random.secure();
-      var bytes = List<int>.generate(32, (_) => random.nextInt(256));
-      key = base64Url.encode(bytes);
-      await saveKey(key);
+  Future<void> generateAndStoreKeyPair() async {
+    var random = pc.SecureRandom("Fortuna")
+      ..seed(pc.KeyParameter(_createUint8ListFromRandom(32)));
+
+    var keyParams = pc.ECKeyGeneratorParameters(pc.ECCurve_secp256k1());
+
+    var keyGen = pc.KeyGenerator("EC")
+      ..init(pc.ParametersWithRandom(keyParams, random));
+    var keyPair = keyGen.generateKeyPair();
+
+    pc.ECPrivateKey privateKey = keyPair.privateKey as pc.ECPrivateKey;
+    pc.ECPublicKey publicKey = keyPair.publicKey as pc.ECPublicKey;
+
+    if (privateKey.d == null) {
+      throw Exception('Private key component is null');
     }
-    return key;
+    String encodedPrivateKey = base64Encode(_intToBytes(privateKey.d));
+    String encodedPublicKey = base64Encode(publicKey.Q!.getEncoded());
+
+    await _saveKey('${FirebaseAuth.instance.currentUser!.uid}_private',
+        encodedPrivateKey, false);
+    await _saveKey('${FirebaseAuth.instance.currentUser!.uid}_public',
+        encodedPublicKey, true);
+  }
+
+  Uint8List _createUint8ListFromRandom(int length) {
+    final rnd = pc.SecureRandom("Fortuna");
+    rnd.seed(pc.KeyParameter(
+        Uint8List.fromList(List<int>.generate(length, (index) => index))));
+    var random = Uint8List(length);
+    for (int i = 0; i < length; i++) {
+      random[i] = rnd.nextUint8();
+    }
+    return random;
+  }
+
+  Uint8List _intToBytes(BigInt? number) {
+    if (number == null) {
+      throw ArgumentError("BigInt cannot be null");
+    }
+    int bytes = (number.bitLength + 7) >> 3;
+    BigInt b256 = BigInt.from(256);
+    Uint8List result = Uint8List(bytes);
+    BigInt num = number;
+    for (int i = 0; i < bytes; i++) {
+      result[bytes - i - 1] = (num % b256).toInt();
+      num = num >> 8;
+    }
+    return result;
+  }
+
+  Future<void> _saveKey(String alies, String key, bool public) async {
+    await _storage.write(key: alies, value: key);
+    if (public) {
+      FirebaseFirestore.instance
+          .collection('Users')
+          .doc(FirebaseAuth.instance.currentUser!.email)
+          .set({
+        'public_key': key,
+      });
+    }
+  }
+
+  // Generate and save a new key if one does not already exist
+  Future<void> ensureKeyExists() async {
+    String? key = await _retrieveKey();
+    if (key == null) {
+      generateAndStoreKeyPair();
+    }
+  }
+
+  // NEVER CALL THIS METHOD IN PRODUCTION, ONLY IN TESTING ENVIRONMENT
+  Future<void> deleteKeys() async {
+    await _storage.delete(
+        key: '${FirebaseAuth.instance.currentUser!.uid}_private');
+    await _storage.delete(
+        key: '${FirebaseAuth.instance.currentUser!.uid}_public');
+  }
+
+  // DO NOT EVER CALL THIS
+  Future<void> deleteAllKeys() async {
+    await _storage.deleteAll();
   }
 }

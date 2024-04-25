@@ -2,11 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:thesis/GUI/homescreen.dart';
+import 'package:thesis/Firebase/create_chat.dart';
 
 class BarcodeScannerWithController extends StatefulWidget {
   final Function(String) onBarcodeScanned;
@@ -22,12 +18,9 @@ class BarcodeScannerWithController extends StatefulWidget {
 class _BarcodeScannerWithControllerState
     extends State<BarcodeScannerWithController> with WidgetsBindingObserver {
   final MobileScannerController controller = MobileScannerController(
-    torchEnabled: false, useNewCameraSelector: true,
-    // formats: [BarcodeFormat.qrCode]
+    torchEnabled: false,
+    useNewCameraSelector: true,
     facing: CameraFacing.back,
-    // detectionSpeed: DetectionSpeed.normal
-    // detectionTimeoutMs: 1000,
-    // returnImage: false,
   );
 
   Barcode? _barcode;
@@ -55,7 +48,8 @@ class _BarcodeScannerWithControllerState
         _barcode = barcodes.barcodes.firstOrNull;
         if (_barcode != null) {
           widget.onBarcodeScanned(_barcode?.rawValue ?? '');
-          Navigator.popUntil(context, (route) => route.isFirst);
+          dispose();
+          Navigator.pop(context);
         }
       });
     }
@@ -65,9 +59,7 @@ class _BarcodeScannerWithControllerState
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-
     _subscription = controller.barcodes.listen(_handleBarcode);
-
     unawaited(controller.start());
   }
 

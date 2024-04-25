@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import '../support/supporting_functions.dart';
 
 void createChat(String receiverId, BuildContext context) async {
-  if (FirebaseAuth.instance.currentUser == null) {
+  if (FirebaseAuth.instance.currentUser == null ||
+      receiverId == '' ||
+      receiverId.isEmpty) {
     return;
   }
   if (FirebaseAuth.instance.currentUser?.uid == receiverId) {

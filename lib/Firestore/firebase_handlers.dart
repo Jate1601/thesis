@@ -12,8 +12,6 @@ Future<void> signUp(String email, String pass) async {
     // handle error //TODO
     rethrow;
   }
-  String key = await getKey();
-  print(key);
 }
 
 Future<void> signIn(String email, String pass) async {
@@ -28,8 +26,6 @@ Future<void> signIn(String email, String pass) async {
       throw Exception('Sign in failed: ${e.message}');
     }
   }
-  String key = await getKey();
-  print(key);
 }
 
 Future<void> signOut() async {

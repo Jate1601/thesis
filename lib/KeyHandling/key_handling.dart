@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,7 +18,9 @@ class KeyStorage {
 
   Future<void> generateAndStoreKeyPair() async {
     var random = pc.FortunaRandom();
-    random.seed(pc.KeyParameter(_createUint8ListFromRandom(32)));
+    var seed =
+        _createUint8ListFromRandom(32); // Ensure exactly 32 bytes are generated
+    random.seed(pc.KeyParameter(seed)); // Seed the FortunaRandom
 
     var keyParams = pc.ECKeyGeneratorParameters(pc.ECCurve_secp256k1());
     var keyGen = pc.KeyGenerator("EC")
@@ -30,6 +33,7 @@ class KeyStorage {
     String encodedPrivateKey = base64Encode(_intToBytes(privateKey.d!));
     String encodedPublicKey = base64Encode(publicKey.Q!.getEncoded());
 
+    // Ensure keys are saved with a unique identifier for public and private
     await _saveKey('${FirebaseAuth.instance.currentUser!.uid}_private',
         encodedPrivateKey, false);
     await _saveKey('${FirebaseAuth.instance.currentUser!.uid}_public',
@@ -37,15 +41,9 @@ class KeyStorage {
   }
 
   Uint8List _createUint8ListFromRandom(int length) {
-    final rnd = pc.SecureRandom("Fortuna");
-    var seedSource = DateTime.now().microsecondsSinceEpoch;
-    var seed = Uint8List.fromList(utf8.encode(seedSource.toString()));
-    rnd.seed(pc.KeyParameter(seed));
-    var randomBytes = Uint8List(length);
-    for (int i = 0; i < length; i++) {
-      randomBytes[i] = rnd.nextUint8();
-    }
-    return randomBytes;
+    final secureRandom = Random.secure();
+    return Uint8List.fromList(
+        List<int>.generate(length, (_) => secureRandom.nextInt(256)));
   }
 
   Uint8List _intToBytes(BigInt? number) {

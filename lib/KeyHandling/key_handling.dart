@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:pointycastle/export.dart' as pc;
 
@@ -17,11 +16,10 @@ class KeyStorage {
   }
 
   Future<void> generateAndStoreKeyPair() async {
-    var random = pc.SecureRandom("Fortuna")
-      ..seed(pc.KeyParameter(_createUint8ListFromRandom(32)));
+    var random = pc.FortunaRandom();
+    random.seed(pc.KeyParameter(_createUint8ListFromRandom(32)));
 
     var keyParams = pc.ECKeyGeneratorParameters(pc.ECCurve_secp256k1());
-
     var keyGen = pc.KeyGenerator("EC")
       ..init(pc.ParametersWithRandom(keyParams, random));
     var keyPair = keyGen.generateKeyPair();
@@ -29,10 +27,7 @@ class KeyStorage {
     pc.ECPrivateKey privateKey = keyPair.privateKey as pc.ECPrivateKey;
     pc.ECPublicKey publicKey = keyPair.publicKey as pc.ECPublicKey;
 
-    if (privateKey.d == null) {
-      throw Exception('Private key component is null');
-    }
-    String encodedPrivateKey = base64Encode(_intToBytes(privateKey.d));
+    String encodedPrivateKey = base64Encode(_intToBytes(privateKey.d!));
     String encodedPublicKey = base64Encode(publicKey.Q!.getEncoded());
 
     await _saveKey('${FirebaseAuth.instance.currentUser!.uid}_private',
@@ -43,13 +38,14 @@ class KeyStorage {
 
   Uint8List _createUint8ListFromRandom(int length) {
     final rnd = pc.SecureRandom("Fortuna");
-    rnd.seed(pc.KeyParameter(
-        Uint8List.fromList(List<int>.generate(length, (index) => index))));
-    var random = Uint8List(length);
+    var seedSource = DateTime.now().microsecondsSinceEpoch;
+    var seed = Uint8List.fromList(utf8.encode(seedSource.toString()));
+    rnd.seed(pc.KeyParameter(seed));
+    var randomBytes = Uint8List(length);
     for (int i = 0; i < length; i++) {
-      random[i] = rnd.nextUint8();
+      randomBytes[i] = rnd.nextUint8();
     }
-    return random;
+    return randomBytes;
   }
 
   Uint8List _intToBytes(BigInt? number) {

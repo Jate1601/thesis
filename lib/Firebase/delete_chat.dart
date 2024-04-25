@@ -5,7 +5,7 @@ class DeleteChat {
     print(chatId);
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     CollectionReference messages =
-        firestore.collection('chats').doc(chatId).collection('message_chain');
+        firestore.collection('Chats').doc(chatId).collection('message_chain');
     WriteBatch batch = firestore.batch();
 
     try {

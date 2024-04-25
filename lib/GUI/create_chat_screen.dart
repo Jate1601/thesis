@@ -12,6 +12,12 @@ class CreateChatScreen extends StatefulWidget {
 class _CreateChatScreenState extends State<CreateChatScreen> {
   final _receiverIdController = TextEditingController();
 
+  void onBarCodeScanned(String scannedValue) {
+    setState(() {
+      _receiverIdController.text = scannedValue;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +53,9 @@ class _CreateChatScreenState extends State<CreateChatScreen> {
         onPressed: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) => BarcodeScannerWithController(),
+              builder: (context) => BarcodeScannerWithController(
+                onBarcodeScanned: onBarCodeScanned,
+              ),
             ),
           );
         },

@@ -6,9 +6,13 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:thesis/GUI/homescreen.dart';
 
 class BarcodeScannerWithController extends StatefulWidget {
-  const BarcodeScannerWithController({super.key});
+  final Function(String) onBarcodeScanned;
+
+  const BarcodeScannerWithController(
+      {super.key, required this.onBarcodeScanned});
 
   @override
   State<BarcodeScannerWithController> createState() =>
@@ -49,6 +53,10 @@ class _BarcodeScannerWithControllerState
     if (mounted) {
       setState(() {
         _barcode = barcodes.barcodes.firstOrNull;
+        if (_barcode != null) {
+          widget.onBarcodeScanned(_barcode?.rawValue ?? '');
+          Navigator.popUntil(context, (route) => route.isFirst);
+        }
       });
     }
   }

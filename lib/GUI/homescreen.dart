@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
 import 'package:thesis/GUI/Chat/chatscreen.dart';
+import 'package:thesis/KeyHandling/key_handling.dart';
 
 import '../Firebase/delete_chat.dart';
 
@@ -165,6 +166,23 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Theme.of(context).colorScheme.secondary,
         ),
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.abc),
+            label: 'ABC',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_box_outlined),
+            label: 'ADD',
+          ),
+        ],
+        onTap: _onTapped,
+      ),
     );
+  }
+
+  void _onTapped(int index) {
+    KeyStorage().deleteAllKeys();
   }
 }

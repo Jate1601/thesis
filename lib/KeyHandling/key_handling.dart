@@ -89,10 +89,12 @@ class KeyStorage {
         key: '${FirebaseAuth.instance.currentUser!.uid}_private');
     await _storage.delete(
         key: '${FirebaseAuth.instance.currentUser!.uid}_public');
+    print('Current users keys are deleted');
   }
 
   // DO NOT EVER CALL THIS
   Future<void> deleteAllKeys() async {
     await _storage.deleteAll();
+    print('All keys deleted');
   }
 }

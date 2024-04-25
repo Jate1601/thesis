@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
 import 'package:thesis/GUI/Chat/chatscreen.dart';
 
+import '../Firebase/delete_chat.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -101,6 +103,52 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       borderRadius: BorderRadius.circular(5)),
                   textColor: Theme.of(context).colorScheme.secondary,
+                  trailing: IconButton(
+                    icon: const Icon(Icons.highlight_remove_rounded),
+                    color: Colors.white,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                )),
+                            title: Text(
+                              'Delete this chat?',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            content: Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await DeleteChat.deleteChat(chatId);
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      // Refreshes the list of chats
+                                    });
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                                const Spacer(),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('No'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 );
               },
             );

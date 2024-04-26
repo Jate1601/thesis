@@ -28,6 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.delete,
+          ),
+          onPressed: () {
+            KeyStorage().deleteAllKeys();
+          },
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Column(
           children: [
@@ -166,23 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
           color: Theme.of(context).colorScheme.secondary,
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.abc),
-            label: 'ABC',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add_box_outlined),
-            label: 'ADD',
-          ),
-        ],
-        onTap: _onTapped,
-      ),
     );
   }
 
-  void _onTapped(int index) {
-    KeyStorage().deleteAllKeys();
-  }
+  void _onTapped(int index) {}
 }

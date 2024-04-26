@@ -66,9 +66,10 @@ class KeyStorage {
     if (public) {
       FirebaseFirestore.instance
           .collection('Users')
-          .doc(FirebaseAuth.instance.currentUser!.email)
+          .doc(FirebaseAuth.instance.currentUser!.uid)
           .set({
         'public_key': key,
+        'email': FirebaseAuth.instance.currentUser!.email,
       });
     }
   }
@@ -79,6 +80,14 @@ class KeyStorage {
     if (key == null) {
       generateAndStoreKeyPair();
     }
+  }
+
+  Future<String> getPublicKeyFromFirebase(String userId) async {
+    return await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(userId)
+        .get()
+        .then((data) => data.data()!['public_key']);
   }
 
   // NEVER CALL THIS METHOD IN PRODUCTION, ONLY IN TESTING ENVIRONMENT

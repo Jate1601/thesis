@@ -11,9 +11,14 @@ import 'package:pointycastle/export.dart' as pc;
 class KeyStorage {
   final FlutterSecureStorage _storage = FlutterSecureStorage();
 
-  // Retrieve key using the Firebase UID as alias
-  Future<String?> _retrieveKey() async {
-    return await _storage.read(key: FirebaseAuth.instance.currentUser!.uid);
+  Future<String?> retrievePrivateKey() async {
+    return await _storage.read(
+        key: '${FirebaseAuth.instance.currentUser!.uid}_private');
+  }
+
+  Future<String?> retrievePublicKey() async {
+    return await _storage.read(
+        key: '${FirebaseAuth.instance.currentUser!.uid}_public');
   }
 
   Future<void> generateAndStoreKeyPair() async {
@@ -74,20 +79,32 @@ class KeyStorage {
     }
   }
 
-  // Generate and save a new key if one does not already exist
   Future<void> ensureKeyExists() async {
-    String? key = await _retrieveKey();
-    if (key == null) {
+    String? privateKey = await retrievePrivateKey();
+    String? publicKey = await retrievePublicKey();
+
+    if (privateKey == null && publicKey == null) {
       generateAndStoreKeyPair();
     }
   }
 
   Future<String> getPublicKeyFromFirebase(String userId) async {
-    return await FirebaseFirestore.instance
-        .collection('Users')
-        .doc(userId)
-        .get()
-        .then((data) => data.data()!['public_key']);
+    try {
+      var snapshot = await FirebaseFirestore.instance
+          .collection('Users')
+          .doc(userId)
+          .get();
+      var publicKey = snapshot.data()?['public_key'];
+      if (publicKey is String) {
+        return publicKey;
+      } else {
+        throw Exception(
+            'Public key is not in the expected format or is missing.');
+      }
+    } catch (e) {
+      print('Error fetching public key: $e');
+      throw Exception('Failed to fetch public key from Firebase.');
+    }
   }
 
   // NEVER CALL THIS METHOD IN PRODUCTION, ONLY IN TESTING ENVIRONMENT

@@ -176,6 +176,4 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  void _onTapped(int index) {}
 }

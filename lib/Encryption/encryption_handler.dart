@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 import 'package:pointycastle/export.dart' as pc;
 import '../KeyHandling/key_handling.dart'; // Import path needs to be correct
 
 class EncryptionHandler {
   final KeyStorage keyStorage;
+  final Random secureRandom = Random.secure();
 
   EncryptionHandler(this.keyStorage);
 
@@ -44,15 +46,47 @@ class EncryptionHandler {
         radix: 16);
   }
 
+  Uint8List deriveKey(Uint8List sharedSecret) {
+    var digest = pc.Digest('SHA-256');
+    return Uint8List.fromList(digest.process(sharedSecret));
+  }
+
   Future<String> encryptMessage(String message, Uint8List sharedSecret) {
-    // Implement encryption logic here
-    return Future.value(base64Encode(sharedSecret)); // Placeholder
+    var key = deriveKey(sharedSecret);
+    var iv = generateRandomIV();
+    var keyParam = pc.KeyParameter(key);
+    var ivParam = pc.ParametersWithIV<pc.KeyParameter>(keyParam, iv);
+    var paddedBlockParam = pc.PaddedBlockCipherParameters(
+        ivParam, null); // Correctly specify parameters
+
+    var paddedCipher = pc.PaddedBlockCipher("AES/CBC/PKCS7")
+      ..init(true, paddedBlockParam); // true for encryption
+
+    var ciphertext = paddedCipher.process(utf8.encode(message));
+    var combinedIVAndCiphertext = Uint8List.fromList(
+        iv + ciphertext); // Combine IV and ciphertext for transmission
+    return Future.value(base64Encode(combinedIVAndCiphertext));
   }
 
   Future<String> decryptMessage(
-      String encryptedMessage, Uint8List sharedSecret) {
-    // Implement decryption logic here
-    return Future.value(String.fromCharCodes(sharedSecret)); // Placeholder
+      String encryptedMessage, Uint8List sharedSecret) async {
+    var key = deriveKey(sharedSecret);
+    var combinedIVAndCiphertext = base64Decode(encryptedMessage);
+    var iv = Uint8List.fromList(
+        combinedIVAndCiphertext.sublist(0, 16)); // Extract the IV
+    var ciphertext =
+        combinedIVAndCiphertext.sublist(16); // Extract the ciphertext
+
+    var keyParam = pc.KeyParameter(key);
+    var ivParam = pc.ParametersWithIV<pc.KeyParameter>(keyParam, iv);
+    var paddedBlockParam = pc.PaddedBlockCipherParameters(
+        ivParam, null); // Correctly specify parameters
+
+    var paddedCipher = pc.PaddedBlockCipher("AES/CBC/PKCS7")
+      ..init(false, paddedBlockParam); // false for decryption
+
+    var decryptedBytes = paddedCipher.process(ciphertext);
+    return utf8.decode(decryptedBytes);
   }
 
   Uint8List bigIntToUint8List(BigInt bigInt) {
@@ -65,5 +99,10 @@ class EncryptionHandler {
             (i) =>
                 int.parse(bigIntBytes.substring(i * 2, i * 2 + 2), radix: 16))
         .toList());
+  }
+
+  Uint8List generateRandomIV() {
+    return Uint8List.fromList(
+        List<int>.generate(16, (_) => secureRandom.nextInt(256)));
   }
 }

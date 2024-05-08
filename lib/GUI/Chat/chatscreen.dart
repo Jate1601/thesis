@@ -2,8 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:thesis/Encryption/encryption_handler.dart';
 import 'package:thesis/Firebase/send_message.dart';
 import 'package:thesis/GUI/Chat/speech_bubble_painter.dart';
+import 'package:thesis/KeyHandling/key_handling.dart';
 
 import '../../Firebase/retrieve_messages.dart';
 
@@ -20,12 +22,45 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   late RetrieveMessages _retrievedMessages;
+  late EncryptionHandler _encryptionHandler;
 
   @override
   void initState() {
     super.initState();
     _retrievedMessages = RetrieveMessages(
         chatId: widget.chatId); // Initialize the message service
+    _encryptionHandler = EncryptionHandler(KeyStorage());
+  }
+
+  Future<String> _decryptText(String encryptedText) async {
+    try {
+      // Fetch shared secret for session from storage or calculate it
+      var sharedSecret =
+          await _encryptionHandler.generateSharedSecret(widget.receiverId);
+      return await _encryptionHandler.decryptMessage(
+          encryptedText, sharedSecret);
+    } catch (e) {
+      print("Error decrypting message: $e");
+      return "Error in decryption";
+    }
+  }
+
+  Widget _buildMessage(String encryptedText) {
+    return FutureBuilder(
+      future: _decryptText(encryptedText),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          if (snapshot.hasData) {
+            return Text(snapshot.data!,
+                style: const TextStyle(color: Colors.black));
+          } else if (snapshot.hasError) {
+            return const Text("Error in message",
+                style: TextStyle(color: Colors.red));
+          }
+        }
+        return const CircularProgressIndicator(); // Show loading indicator while decrypting
+      },
+    );
   }
 
   @override
@@ -73,13 +108,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             child: Container(
                               padding: const EdgeInsets.symmetric(
                                   horizontal: 14.0, vertical: 10.0),
-                              child: Text(
-                                chatDocs[index]['text'],
-                                //overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                ),
-                              ),
+                              child: _buildMessage(chatDocs[index]['text']),
                             ),
                           ),
                         ),

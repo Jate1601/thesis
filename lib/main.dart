@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:thesis/GUI/User/logout.dart';
 import 'Firestore/auth_wrapper.dart';
+import 'GUI/Settings/settings.dart';
 import 'GUI/User/login.dart';
 import 'GUI/create_chat_screen.dart';
 import 'firebase_options.dart';
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
         '/Login': (context) => const Login(),
         '/Logout': (context) => const Logout(),
         '/CreateChat': (context) => const CreateChatScreen(),
+        '/Settings': (context) => const Settings(),
       },
       title: 'Thesis Project',
       theme: ThemeData(

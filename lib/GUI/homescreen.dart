@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis/Firebase/retrieve_chats.dart';
 import 'package:thesis/GUI/Chat/chatscreen.dart';
-import 'package:thesis/support/app_config.dart';
+import 'package:thesis/KeyHandling/key_handling.dart';
+
+import '../Firebase/delete_chat.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -26,9 +28,25 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(
+            Icons.delete,
+          ),
+          onPressed: () {
+            KeyStorage().deleteAllKeys();
+          },
+        ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        title: Text(
-          'Homescreen',
+        title: Column(
+          children: [
+            const Text(
+              'Homescreen ',
+            ),
+            Text(
+              FirebaseAuth.instance.currentUser!.uid, // TODO Remove this line
+              overflow: TextOverflow.fade,
+            ),
+          ],
         ),
         actions: [
           IconButton(
@@ -63,8 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
             return ListView.builder(
               itemCount: chatDocs?.length,
               itemBuilder: (ctx, index) {
-                final chatId = chatDocs?[index].id;
-                final participants = chatDocs?[index]['participants'];
+                final chatId = chatDocs![index].id;
+                final participants = chatDocs[index]['participants'];
                 // TODO make this look better
                 return ListTile(
                   tileColor: Theme.of(context).colorScheme.primaryContainer,
@@ -72,16 +90,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   subtitle: Text('Participants: ${participants.join(", ")}'),
                   onTap: () {
                     final String receiverId;
-                    if (chatDocs?[index]['participants'][0] ==
+                    if (chatDocs[index]['participants'][0] ==
                         FirebaseAuth.instance.currentUser?.uid) {
-                      receiverId = chatDocs?[index]['participants'][1];
+                      receiverId = chatDocs[index]['participants'][1];
                     } else {
-                      receiverId = chatDocs?[index]['participants'][0];
+                      receiverId = chatDocs[index]['participants'][0];
                     }
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (context) => ChatScreen(
-                            chatId: orgChatId, receiverId: receiverId),
+                          chatId: chatId,
+                          receiverId: receiverId,
+                        ),
                       ),
                     );
                   },
@@ -92,6 +112,52 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                       borderRadius: BorderRadius.circular(5)),
                   textColor: Theme.of(context).colorScheme.secondary,
+                  trailing: IconButton(
+                    icon: const Icon(Icons.highlight_remove_rounded),
+                    color: Colors.white,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16.0),
+                                side: BorderSide(
+                                  color: Theme.of(context).colorScheme.primary,
+                                )),
+                            title: Text(
+                              'Delete this chat?',
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            content: Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () async {
+                                    await DeleteChat.deleteChat(chatId);
+                                    Navigator.pop(context);
+                                    setState(() {
+                                      // Refreshes the list of chats
+                                    });
+                                  },
+                                  child: const Text('Yes'),
+                                ),
+                                const Spacer(),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('No'),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
                 );
               },
             );
@@ -100,11 +166,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          //TODO send a new message to new user
+          Navigator.pushNamed(context, '/CreateChat');
         },
         backgroundColor: Theme.of(context).colorScheme.primary,
         child: Icon(
-          Icons.send,
+          Icons.add_box_outlined,
           color: Theme.of(context).colorScheme.secondary,
         ),
       ),

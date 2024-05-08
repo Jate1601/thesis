@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:thesis/GUI/User/signup.dart';
 
@@ -68,8 +69,13 @@ class _LoginState extends State<Login> {
                   final String email = _emailController.text.trim();
                   final String pass = _passwordController.text.trim();
                   try {
-                    await signIn(email, pass);
-                    showSnackBar('User successfully logged in', context);
+                    signIn(email, pass);
+                    if (FirebaseAuth.instance.currentUser!.uid.isNotEmpty) {
+                      showSnackBar('User successfully logged in', context);
+                    } else
+                      showSnackBar(
+                          'Failed to login, check your details and try again.',
+                          context);
                   } catch (e) {
                     showSnackBar(e.toString(), context);
                   }
@@ -84,7 +90,7 @@ class _LoginState extends State<Login> {
           _passwordController.text = "Test123@!";
           _emailController.text = "test@test.com";
         },
-        label: Text('Deets'),
+        label: const Text('Details'),
       ),
     );
   }

@@ -56,7 +56,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
     String generatedOtp = OTP.generateTOTPCodeString(
       storedSecret,
       timeStamp,
-      algorithm: Algorithm.SHA256,
+      algorithm: Algorithm.SHA1,
       interval: timeStep,
       length: 6,
       isGoogle: true,
@@ -115,9 +115,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               const Text('The entered OTP is incorrect. Please try again.'),
           actions: <Widget>[
             TextButton(
-              child: const Text('OK'),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
+                child: const Text('OK'),
+                onPressed: () {
+                  _otpController.clear();
+                  Navigator.of(context).pop();
+                }),
           ],
         ),
       );
